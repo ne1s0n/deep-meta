@@ -68,7 +68,7 @@ class LearningRateFinder:
 		K.set_value(self.model.optimizer.lr, lr)
 	def find(self, trainData, startLR, endLR, epochs=None,
 		stepsPerEpoch=None, batchSize=32, sampleSize=2048,
-		verbose=1):
+		verbose=1, class_weight=None):
 		# reset our class-specific variables
 		self.reset()
 		# determine if we are using a data generator or not
@@ -118,6 +118,7 @@ class LearningRateFinder:
 				steps_per_epoch=stepsPerEpoch,
 				epochs=epochs,
 				verbose=verbose,
+                class_weight=class_weight,
 				callbacks=[callback])
 		# otherwise, our entire training data is already in memory
 		else:
@@ -127,6 +128,7 @@ class LearningRateFinder:
 				batch_size=batchSize,
 				epochs=epochs,
 				callbacks=[callback],
+                class_weight=class_weight,
 				verbose=verbose)
 		# restore the original model weights and learning rate
 		self.model.load_weights(self.weightsFile)
