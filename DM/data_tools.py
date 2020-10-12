@@ -1,3 +1,5 @@
+import numpy as np
+
 def find_all(s, ch):
   """Returns all occurrences of character ch in string s"""
   return [i for i, ltr in enumerate(s) if ltr == ch]
