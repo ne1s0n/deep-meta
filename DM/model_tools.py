@@ -36,7 +36,7 @@ def get_model_seq1(conv_filters, conv_kernel_sizes, dropout_rates, pool_sizes, i
 	#the model is declared, but we still need to compile it to actually
 	#build all the data structures
 	model.compile(optimizer = Adam(learning_rate = lr),
-	loss = target_loss, 
-	metrics = target_accuracy)
+		loss = target_loss, 
+		metrics = target_accuracy)
 
 	return(model) 
