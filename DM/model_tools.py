@@ -28,7 +28,7 @@ def get_model_seq1(conv_filters, conv_kernel_sizes, dropout_rates, pool_sizes, i
 		model.add(Dense(units = output_units, activation='softmax'))
 		target_loss = 'categorical_crossentropy'
 		target_accuracy = ['categorical_accuracy']
-	else
+	else:
 		model.add(Dense(units = 1, activation='sigmoid'))
 		target_loss = 'binary_crossentropy'
 		target_accuracy = ['binary_accuracy']
