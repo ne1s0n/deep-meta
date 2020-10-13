@@ -114,6 +114,7 @@ class LearningRateFinder:
 		# check to see if we are using a data iterator
 		if useGen:
 			self.model.fit(
+				shuffle=True, 
 				x=trainData,
 				steps_per_epoch=stepsPerEpoch,
 				epochs=epochs,
@@ -125,6 +126,7 @@ class LearningRateFinder:
 			# train our model using Keras' fit method
 			self.model.fit(
 				x=trainData[0], y=trainData[1],
+				shuffle=True, 
 				batch_size=batchSize,
 				epochs=epochs,
 				callbacks=[callback],
