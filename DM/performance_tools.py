@@ -1,10 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
+from sklearn.metrics import matthews_corrcoef
 
 def extra_metrics(y, yhat):
-	#TODO
-	return({})
+	res = {}
+	res['val_MCC'] = matthews_corrcoef(y, yhat)
+
+	return(res)
 
 def save_performances(conf_dict, metrics_dict, outfile):
 	#TODO
