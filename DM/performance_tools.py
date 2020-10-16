@@ -37,6 +37,12 @@ def save_results(conf_dict, metrics_dict, outfile):
 	#done
 	return(None)
 
+def best_metrics(h):
+	"""Returns the best results obtained over all training for the metric
+	present in the history log object as returned by a keras model .fit() method"""
+	#TODO to be implemented
+	return(None)
+
 def last_metrics(h, n=5):
 	"""returns the average (over the last n epochs) of metrics and losses 
 	from a history log as returned by a keras model .fit() method"""
