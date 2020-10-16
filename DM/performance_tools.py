@@ -1,20 +1,40 @@
+import os
+import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
 from sklearn.metrics import matthews_corrcoef
 
 def extra_metrics(y, yhat):
+	"""returns a dictionary with a set of extra statistics on performance"""
 	res = {}
 	res['val_MCC'] = matthews_corrcoef(y, yhat)
 
 	return(res)
 
-def save_performances(conf_dict, metrics_dict, outfile):
-	#TODO
-	#if outfile is already there work in append,
-	#otherwise work in new-file-creation
-	#the new data (use last_metrics) to the list of dicts
-	#save
+def save_results(conf_dict, metrics_dict, outfile):
+	"""Saves the passed configuration and metrics data in the passed outfile"""
+	
+	#let's have a big dict to save
+	d = conf_dict
+	d.update(metrics_dict)
+	
+	#if outfile does not exist there are extra steps required
+	if not os.path.isfile(outfile):
+		#let's ensure the path is there
+		p = os.path.dirname(os.path.abspath(outfile))
+		pathlib.Path(p).mkdir(parents=True, exist_ok=True) 
+		#let's add at least the header
+		with open(outfile, 'w') as csvfile:
+			writer = csv.DictWriter(csvfile, fieldnames=d.keys())
+			writer.writeheader()
+		
+	#at this point the output file exists for sure. Let's append the data
+	with open(outfile, 'a+') as csvfile:
+		writer = csv.DictWriter(csvfile, fieldnames=d.keys())
+		writer.writerow(d)
+	
+	#done
 	return(None)
 
 def last_metrics(h, n=5):
