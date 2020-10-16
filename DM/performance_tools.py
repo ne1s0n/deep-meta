@@ -63,8 +63,10 @@ def plot_history(h, title):
 		k = "val_" + metric
 		if k in h.history:
 			plt.plot(h.history[k], label = "Validation set")
-			plt.xlabel('Epochs')
-			plt.title(title + ' - ' + metric)
-			plt.legend()
-			plt.show()
+		
+		#rest of the plot
+		plt.xlabel('Epochs')
+		plt.title(title + ' - ' + metric)
+		plt.legend()
+		plt.show()
 
