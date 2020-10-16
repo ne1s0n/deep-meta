@@ -16,6 +16,8 @@ def get_model_seq1(conv_filters, conv_kernel_sizes, dropout_rates, pool_sizes, i
 		if (conv_filters[i] is not None) and (conv_kernel_sizes[i] is not None):
 			model.add(Conv1D(filters = conv_filters[i], activation='relu', 
 			kernel_size = conv_kernel_sizes[i], strides = 1, padding = 'same'))
+			model.add(BatchNormalization())	
+
 		if dropout_rates[i] is not None:   
 			model.add(Dropout(rate=dropout_rates[i]))
 		if pool_sizes[i] is not None:
