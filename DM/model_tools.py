@@ -78,7 +78,7 @@ def model_seq2(phi, input_shape, output_units, lr):
 	#top layers
 	m.add(Flatten())
 	#binary or multiclass?
-	if output_units > 1:
+	if output_units > 2:
 		m.add(Dense(units = output_units, activation='softmax'))
 		target_loss = 'categorical_crossentropy'
 		target_accuracy = ['categorical_accuracy']
