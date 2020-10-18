@@ -39,12 +39,20 @@ def save_results(conf_dict, metrics_dict, outfile):
 
 def best_metrics(h):
 	"""Returns the best results obtained over all training for the metric
-	present in the history log object as returned by a keras model .fit() method"""
-	#TODO to be implemented
-	return(None)
+	present in the history log object as returned by a keras model .fit() method. 
+	"Best" is defined as minimum for loss, maximum for everything else."""
+	res = {}
+	for metric in h.history.keys():
+		if metric.find('loss') != -1:
+			#loss
+			res[metric + '_best'] = np.min(h.history[metric])
+		else:
+			#non loss, things like accuracy and AUC
+			res[metric + '_best'] = np.max(h.history[metric])
+	return(res)
 
 def last_metrics(h, n=5):
-	"""returns the average (over the last n epochs) of metrics and losses 
+	"""Returns the average (over the last n epochs) of metrics and losses 
 	from a history log as returned by a keras model .fit() method"""
 	res = {}
 	for metric in h.history.keys():
