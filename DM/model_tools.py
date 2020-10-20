@@ -3,21 +3,10 @@ from keras.models import Sequential, Model
 from keras.layers import Dense, Conv1D, Flatten, MaxPooling1D, Dropout, Input, BatchNormalization
 import keras.metrics
 import numpy as np
-
-def model_seq2_update(p):
-	"""updated the passed parameter dict according to the contained growth
-	factor"""
-	
-	#the number of conv units simply grows
-	p['conv_units_internal'] = p['conv_units_internal'] * (p['beta'] ** p['phi']) 
-	p['conv_units'] = np.floor(p['conv_units_internal'])
-	
-	#the size of conv units shrinks, but never goes below 2
-	p['conv_size_internal'] = p['conv_size_internal'] / (p['gamma'] ** p['phi']) 
-	p['conv_size'] = np.max([2, np.floor(p['conv_size_internal'])])
+from DM import performance_tools, model_tools
 
 	
-def model_seq2_layer(p):
+def _model_seq2_layer(p):
 	"""Returns a Sequential model representing a layer in seq2 model. It
 	contains Conv1D, Conv1D, BatchNormalization, MaxPooling1D. The 
 	convolutions are identical (same filter size, same number of units). 
@@ -38,45 +27,47 @@ def model_seq2_layer(p):
 
 	return(m)
 	
-def model_seq2(phi, input_shape, output_units, lr):
-	"""Implementing a variable size model, linked to a single parameter phi"""
-	m = Sequential()
+def model_seq2(theta, input_shape, output_units, lr, dropout_rate=0.2, pool_size=2, base_layers=4, base_conv_units=32, base_conv_size=32):
+	"""Implementing a variable size model, linked to a single parameter: theta"""
 	
-	#putting all the parameters in a handy dict
+	#params to be used for building the net
 	p = {
-		#these are fixed, for now
-		'dropout_rate' : 0.2,
-		'pool_size' : 2,
-		'alpha' : 2,  #base for growing layers
-		'beta'  : 2,  #base for growing conv units count
-		'gamma' : 2,  #base for shrinking conv units kernels
+		'dropout_rate' : dropout_rate,
+		'pool_size' : pool_size,
+		'base_layers' : base_layers,
+		'base_conv_units' : base_conv_units,
+		'base_conv_size'  : base_conv_size
+		}
 	
-		#these represent the base model
-		'layers' : 3,
-		'conv_units' : 32,
-		'conv_size'  : 32,
-		
-		#just taking notes
-		'phi' : phi
-	}
-	
-	
-	#some derived parameters
-	p['conv_units_internal'] = p['conv_units']
-	p['conv_size_internal'] = p['conv_size']
-	p['final_layers'] = np.floor(p['layers'] * (p['alpha'] ** p['phi']))
+	#computing phase transition points
+	layers = int(base_layers * theta)
+	phase_length = layers / 4.0
+	limit1 = int(np.round(phase_length))
+	limit2 = int(np.round(2 * phase_length))
+	limit3 = int(np.round(3 * phase_length))
+
+	#building the phase plan
+	layer_phase = np.zeros(layers)
+	layer_phase[0:limit1] = 0
+	layer_phase[limit1:limit2] = 1
+	layer_phase[limit2:limit3] = 2
+	layer_phase[limit3:] = 3
 	
 	#building the model
 	m = Sequential()
 	
-	#adding the layers and updating the parameters accordingly to
-	#growth factor
-	for l in range(p['final_layers']):
-		m.add(model_tools.model_seq2_layer(p))
-		model_tools.model_seq2_update(p)
-	
+	#let's start with the input layer
+	m.add(Input(shape = input_shape))
+
+	for i in range(layers):
+		factor = 2 ** layer_phase[i]
+		p['conv_units'] = int(p['base_conv_units'] * factor)
+		p['conv_size']  = int(p['base_conv_size']  / factor)
+		m.add(model_tools._model_seq2_layer(p))
+		
 	#top layers
 	m.add(Flatten())
+	
 	#binary or multiclass?
 	if output_units > 2:
 		m.add(Dense(units = output_units, activation='softmax'))
@@ -94,9 +85,6 @@ def model_seq2(phi, input_shape, output_units, lr):
 		metrics = target_accuracy)
 	
 	return(m)
-	
-	
-
 
 def get_model_seq1(conv_filters, conv_kernel_sizes, dropout_rates, pool_sizes, input_shape, output_units, lr):
 	#declare a base model
