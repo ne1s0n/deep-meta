@@ -9,13 +9,13 @@ def extra_metrics(y, yhat_scores, binary):
 	"""returns a dictionary with a set of extra statistics on performance"""
 	res = {}
 	if binary:
-		res['val_MCC'] = matthews_corrcoef(y, np.rint(yhat_scores))
+		res['MCC'] = matthews_corrcoef(y, np.rint(yhat_scores))
 		(res['pre'], res['rec'], res['fbeta'], res['supp']) = precision_recall_fscore_support(
 			y_true = y, y_pred = np.rint(yhat_scores), pos_label=1, average='binary'
 		)
 		res['AUC'] = roc_auc_score(y_true = y, y_score = np.rint(yhat_scores))
 	else:
-		res['val_MCC'] = matthews_corrcoef(y, yhat_scores.argmax(axis=-1))
+		res['MCC'] = matthews_corrcoef(y, yhat_scores.argmax(axis=-1))
 		#added to have the same columns in the resulting performance table
 		res['pre'] = None
 		res['rec'] = None
