@@ -3,13 +3,25 @@ import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
-from sklearn.metrics import matthews_corrcoef
+from sklearn.metrics import matthews_corrcoef, precision_recall_fscore_support, roc_auc_score
 
-def extra_metrics(y, yhat):
+def extra_metrics(y, yhat_scores, binary):
 	"""returns a dictionary with a set of extra statistics on performance"""
 	res = {}
-	res['val_MCC'] = matthews_corrcoef(y, yhat)
-
+	if binary:
+		res['val_MCC'] = matthews_corrcoef(y, np.rint(yhat_scores))
+		(res['pre'], res['rec'], res['fbeta'], res['supp']) = precision_recall_fscore_support(
+			y_true = y, y_pred = np.rint(yhat_scores), pos_label=1, average='binary'
+		)
+		res['AUC'] = roc_auc_score(y_true = y, y_score = np.rint(yhat_scores))
+	else:
+		res['val_MCC'] = matthews_corrcoef(y, yhat_scores.argmax(axis=-1))
+		#added to have the same columns in the resulting performance table
+		res['pre'] = None
+		res['rec'] = None
+		res['fbeta'] = None
+		res['supp'] = None
+		res['AUC'] = None
 	return(res)
 
 def save_results(conf_dict, metrics_dict, outfile):
