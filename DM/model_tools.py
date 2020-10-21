@@ -27,7 +27,7 @@ def _model_seq2_layer(p):
 
 	return(m)
 	
-def model_seq2(theta, input_shape, output_units, lr, dropout_rate=0.2, pool_size=2, base_layers=4, base_conv_units=32, base_conv_size=32):
+def model_seq2(theta, input_shape, output_units, dropout_rate=0.2, pool_size=2, base_layers=4, base_conv_units=32, base_conv_size=32):
 	"""Implementing a variable size model, linked to a single parameter: theta"""
 	
 	#params to be used for building the net
@@ -71,22 +71,12 @@ def model_seq2(theta, input_shape, output_units, lr, dropout_rate=0.2, pool_size
 	#binary or multiclass?
 	if output_units > 2:
 		m.add(Dense(units = output_units, activation='softmax'))
-		target_loss = 'categorical_crossentropy'
-		target_accuracy = ['categorical_accuracy']
 	else:
 		m.add(Dense(units = 1, activation='sigmoid'))
-		target_loss = 'binary_crossentropy'
-		target_accuracy = ['binary_accuracy']
 
-	#the model is declared, but we still need to compile it to actually
-	#build all the data structures
-	m.compile(optimizer = Adam(learning_rate = lr),
-		loss = target_loss, 
-		metrics = target_accuracy)
-	
 	return(m)
 
-def get_model_seq1(conv_filters, conv_kernel_sizes, dropout_rates, pool_sizes, input_shape, output_units, lr):
+def get_model_seq1(conv_filters, conv_kernel_sizes, dropout_rates, pool_sizes, input_shape, output_units):
 	#declare a base model
 	model = Sequential()
 
@@ -111,22 +101,12 @@ def get_model_seq1(conv_filters, conv_kernel_sizes, dropout_rates, pool_sizes, i
 	#binary or multiclass?
 	if output_units > 2:
 		model.add(Dense(units = output_units, activation='softmax'))
-		target_loss = 'categorical_crossentropy'
-		target_accuracy = ['categorical_accuracy']
 	else:
 		model.add(Dense(units = 1, activation='sigmoid'))
-		target_loss = 'binary_crossentropy'
-		target_accuracy = ['binary_accuracy']
-
-	#the model is declared, but we still need to compile it to actually
-	#build all the data structures
-	model.compile(optimizer = Adam(learning_rate = lr),
-		loss = target_loss, 
-		metrics = target_accuracy)
 
 	return(model) 
 
-def get_model_Yıldırım(input_shape, output_units, lr):
+def get_model_Yıldırım(input_shape, output_units):
 	"""Model from:
 		Yıldırım, Özal, et al. 
 		"Arrhythmia detection using deep convolutional neural network with long duration ECG signals." 
@@ -161,17 +141,7 @@ def get_model_Yıldırım(input_shape, output_units, lr):
 	#binary or multiclass?
 	if output_units > 2:
 		model.add(Dense(units = output_units, activation='softmax'))
-		target_loss = 'categorical_crossentropy'
-		target_accuracy = ['categorical_accuracy']
 	else:
 		model.add(Dense(units = 1, activation='sigmoid'))
-		target_loss = 'binary_crossentropy'
-		target_accuracy = ['binary_accuracy']
-
-	#the model is declared, but we still need to compile it to actually
-	#build all the data structures
-	model.compile(optimizer = Adam(learning_rate = lr),
-		loss = target_loss, 
-		metrics = target_accuracy)
 
 	return(model) 
