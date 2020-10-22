@@ -72,27 +72,28 @@ def last_metrics(h, n=5):
 
 	return(res)
 
-def plot_history(h, title):
-	"""Plots loss and all available metrics starting from a history log as returned 
-	by a keras model .fit() method"""
-	for metric in h.history.keys():
-		#ignoring metrics on validation set, which are implied when
-		#plotting on training set
-		if metric.startswith('val_'):
-			continue
-
-		#if we get here we found a metric on the training set,
-		#let's plot it
-		plt.plot(h.history[metric], label = "Train set")
-
-		#is it present in the val set, too?
-		k = "val_" + metric
-		if k in h.history:
-			plt.plot(h.history[k], label = "Validation set")
-		
-		#rest of the plot
-		plt.xlabel('Epochs')
-		plt.title(title + ' - ' + metric)
-		plt.legend()
+def plot_history(h, title = None, outfile = None, show = False, lines = None, ylim=(0, 1)):
+	"""Plots either the selected lines or everything available, 
+	data is from a history log h as returned by a keras model .fit() method"""
+	
+	#if the user did not specify a subset we take everything
+	if lines is None:
+		lines = h.history.keys()
+	
+	#adding each line
+	for l in lines:
+		plt.plot(h.history[l], label = l)
+	
+	#rest of the plot
+	plt.xlabel('Epochs')
+	plt.title(title)
+	plt.legend()
+	plt.ylim(ylim)
+	
+	#saving
+	if outfile is not None:
+		plt.savefig(outfile)
+	
+	#showing
+	if show:
 		plt.show()
-
