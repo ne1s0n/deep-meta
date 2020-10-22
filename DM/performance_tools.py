@@ -79,6 +79,9 @@ def plot_history(h, title = None, outfile = None, show = False, lines = None, yl
 	#if the user did not specify a subset we take everything
 	if lines is None:
 		lines = h.history.keys()
+		
+	#starting a new plot
+	plt.figure() 
 	
 	#adding each line
 	for l in lines:
