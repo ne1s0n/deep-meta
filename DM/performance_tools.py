@@ -97,3 +97,15 @@ def plot_history(h, title = None, outfile = None, show = False, lines = None, yl
 	#showing
 	if show:
 		plt.show()
+
+def format_timedelta(delta, include_seconds = False):
+	"""Transforms a datetime.timedelta into a printable string, optionally
+	including seconds"""
+	hours, remainder = divmod(delta.seconds, 3600)
+	minutes, seconds = divmod(remainder, 60)
+		
+	res = '{:02}:{:02}'.format(int(hours), int(minutes))
+	if include_seconds:
+		res += ':{:02}'.format(int(seconds))
+		
+	return(res)
