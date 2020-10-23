@@ -135,7 +135,7 @@ class LearningRateFinder:
 		# restore the original model weights and learning rate
 		self.model.load_weights(self.weightsFile)
 		K.set_value(self.model.optimizer.lr, origLR)
-	def plot_loss(self, skipBegin=10, skipEnd=1, title=""):
+	def plot_loss(self, skipBegin=10, skipEnd=1, title="", outfile=None):
 		# grab the learning rate and losses values to plot
 		lrs = self.lrs[skipBegin:-skipEnd]
 		losses = self.losses[skipBegin:-skipEnd]
@@ -147,3 +147,7 @@ class LearningRateFinder:
 		# if the title is not empty, add it to the plot
 		if title != "":
 			plt.title(title)
+		
+		#saving
+		if outfile is not None:
+			plt.savefig(outfile)

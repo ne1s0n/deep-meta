@@ -5,7 +5,7 @@ from pyimagesearch_lrfinder import learningratefinder
 
 def bestLR(model, trainData, startLR = 1e-10, endLR = 1e+1,
 	batchSize=32, class_weight=None, epochs=5, sampleSize=2048,
-	verbose=1):
+	verbose=1, outfile=None):
 	"""Returns the best LR based on the test from learningratefinder"""
 
 	#save the model weights
@@ -20,7 +20,8 @@ def bestLR(model, trainData, startLR = 1e-10, endLR = 1e+1,
 		class_weight = class_weight,
 		epochs = epochs, 
 		sampleSize = sampleSize,
-		verbose = verbose)
+		verbose = verbose,
+		outfile=None)
 
 	#restore initial weights
 	model.set_weights(we)
