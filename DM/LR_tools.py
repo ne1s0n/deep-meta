@@ -20,11 +20,14 @@ def bestLR(model, trainData, startLR = 1e-10, endLR = 1e+1,
 		class_weight = class_weight,
 		epochs = epochs, 
 		sampleSize = sampleSize,
-		verbose = verbose,
-		outfile=None)
+		verbose = verbose)
 
 	#restore initial weights
 	model.set_weights(we)
+	
+	#plotting, if requested
+	if outfile is not None:
+		lrf.plot_loss(skipBegin=10, skipEnd=1, title="", outfile=outfile)
 	
 	#extracting and returning the best LR
 	i = np.argmin(lrf.losses)
