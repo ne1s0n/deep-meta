@@ -72,7 +72,7 @@ def last_metrics(h, n=5):
 
 	return(res)
 
-def plot_history(h, title = None, outfile = None, show = False, lines = None, ylim=(0, 1)):
+def plot_history(h, title = None, outfile = None, show = False, lines = None, ylim=(-0.05, 1.05)):
 	"""Plots either the selected lines or everything available, 
 	data is from a history log h as returned by a keras model .fit() method"""
 	
