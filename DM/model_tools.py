@@ -1,3 +1,4 @@
+import tensorflow.keras.applications
 from keras.optimizers import Adam
 from keras.models import Sequential, Model
 from keras.layers import Dense, Conv1D, Flatten, MaxPooling1D, Dropout, Input, BatchNormalization
@@ -145,3 +146,23 @@ def get_model_Yıldırım(input_shape, output_units):
 		model.add(Dense(units = 1, activation='sigmoid'))
 
 	return(model) 
+
+def model_effnet(input_shape, output_units, B = 0, weights=None, trainable=True):
+	#base sequential model
+	model = Sequential()
+	
+	#adding the efficientnet
+	target_eff = "EfficientNetB" + str(B)
+	class_ = getattr(tensorflow.keras.applications, target_eff)
+	eff = class_(include_top=False, weights=weights, input_shape=input_shape)
+	eff.trainable = trainable
+	model.add(eff)
+	
+	#top layers, binary or multiclass?
+	model.add(Flatten())
+	if output_units > 1:
+		model.add(Dense(units = output_units, activation='softmax'))
+	else:
+		model.add(Dense(units = 1, activation='sigmoid'))
+
+	return(model)
