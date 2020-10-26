@@ -185,7 +185,7 @@ def load_all_fastas(data_summary, val_split = None):
     val_features = train_features[val_index, :, :]
     val_classes  = train_classes[val_index]
     train_features = train_features[train_index, :, :]
-    trian_classes  = train_classes[train_index]
+    train_classes  = train_classes[train_index]
   
   #and we are done
   return(train_features, train_classes, test_features, test_classes, val_features, val_classes)
