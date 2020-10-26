@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.model_selection import StratifiedShuffleSplit
 
 def find_all(s, ch):
   """Returns all occurrences of character ch in string s"""
@@ -125,17 +126,19 @@ def build_set(features_dict, classes_sequence):
   #and we are done
   return((res, classes))
 
-def load_all_fastas(data_summary):
+def load_all_fastas(data_summary, val_split = None):
   """builds and returns features cube and class labels array for
-  train and test sets, with the data specified in the passed 
+  train, test and optionally validation sets, with the data specified in the passed 
   data summary pandas dataframe (expected columns: file, class, 
-  training)"""
+  training). Argument val_split can be either a fraction in [0,1] or None"""
 
-  #file, class, training
+  #we start by loading train/test data
+
+  #file, class, training. 
   train_features = {}
   test_features = {}
   train_class_progression = []
-  test_class_progression = []
+  test_features = {}
 
   max_seq_length = 0
 
@@ -171,6 +174,19 @@ def load_all_fastas(data_summary):
   #load everything in two big matrices, plus classes arrays
   (train_features, train_classes) = build_set(train_features, train_class_progression)
   (test_features, test_classes)   = build_set(test_features,  test_class_progression)
-
+  
+  #if we don't have a validation set, we are done
+  if val_split is None:
+    return(train_features, train_classes, test_features, test_classes)
+   
+  #if we get here, we need to carve a validation set from the train data
+  sss = StratifiedShuffleSplit(n_splits=1, test_size=val_split)
+  for train_index, val_index in sss.split(train_features, train_classes):
+    val_features = train_features.iloc[val_index, :, :]
+    val_classes  = train_classes[val_index]
+    train_features = train_features.iloc[train_index, :, :]
+    trian_classes  = train_classes[train_index]
+  
   #and we are done
-  return(train_features, train_classes, test_features, test_classes)
+  return(train_features, train_classes, test_features, test_classes, val_features, val_classes)
+
