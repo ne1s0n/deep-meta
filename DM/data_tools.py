@@ -138,7 +138,7 @@ def load_all_fastas(data_summary, val_split = None):
   train_features = {}
   test_features = {}
   train_class_progression = []
-  test_features = {}
+  test_class_progression = []
 
   max_seq_length = 0
 
