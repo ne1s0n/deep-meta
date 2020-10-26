@@ -182,9 +182,9 @@ def load_all_fastas(data_summary, val_split = None):
   #if we get here, we need to carve a validation set from the train data
   sss = StratifiedShuffleSplit(n_splits=1, test_size=val_split)
   for train_index, val_index in sss.split(train_features, train_classes):
-    val_features = train_features.iloc[val_index, :, :]
+    val_features = train_features[val_index, :, :]
     val_classes  = train_classes[val_index]
-    train_features = train_features.iloc[train_index, :, :]
+    train_features = train_features[train_index, :, :]
     trian_classes  = train_classes[train_index]
   
   #and we are done
